@@ -211,20 +211,11 @@ function simulateSubmit(event, isContact) {
   
   const form = event.target;
   const formData = new FormData(form);
-  const name = formData.get('name');
-  const email = formData.get('email');
-  const message = formData.get('message') || '';
-  const honey = formData.get('_honey') || '';
+  const email = formData.get('email') || '';
   const errorMsgEl = form.querySelector('.error-msg');
   
   // Clear previous errors
   if (errorMsgEl) errorMsgEl.style.display = 'none';
-
-  // Check honeypot (spam protection)
-  if (honey.trim() !== '') {
-    // Silently fail for bots
-    return;
-  }
 
   // Validate Gmail
   if (!email.toLowerCase().endsWith('@gmail.com')) {
@@ -236,6 +227,12 @@ function simulateSubmit(event, isContact) {
     }
     return;
   }
+
+  // Add required Web3Forms fields
+  formData.set('access_key', '127c4fea-0e33-418a-a3f3-c4fa7c5d014b');
+  formData.set('subject', isContact ? 'Work Inquiry from Portfolio' : 'App Download Request from Portfolio');
+  formData.set('from_name', formData.get('name') || 'Portfolio Visitor');
+  formData.set('from_email', email);
 
   // Show loading state
   const loadingBar = document.getElementById('loading-bar');
@@ -254,25 +251,9 @@ function simulateSubmit(event, isContact) {
     submitBtn.innerHTML = 'Sending... <i class="fa-solid fa-spinner fa-spin"></i>';
   }
 
-  // Prepare Web3Forms data
-  const web3Data = {
-    access_key: '127c4fea-0e33-418a-a3f3-c4fa7c5d014b',
-    subject: isContact ? 'Work Inquiry from Portfolio' : 'App Download Request from Portfolio',
-    from_name: name,
-    from_email: email,
-    message: isContact ? message : `Request for downloadable app version of game project.\n\nName: ${name}\nEmail: ${email}`,
-    _template: 'table',
-    _captcha: 'false'
-  };
-
-  // Submit to Web3Forms
   fetch('https://api.web3forms.com/submit', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify(web3Data)
+    body: formData
   })
   .then(response => response.json())
   .then(data => {
