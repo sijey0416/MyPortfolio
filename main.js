@@ -205,19 +205,29 @@ window.onclick = function (event) {
 };
 
 // --- FORM SUBMISSION SIMULATION ---
+// --- FORM SUBMISSION WITH WEB3FORMS ---
 function simulateSubmit(event, isContact) {
   event.preventDefault();
   
   const form = event.target;
-  const emailInput = form.querySelector('input[type="email"], input[name="email"]');
-  const senderEmail = emailInput ? emailInput.value : '';
+  const formData = new FormData(form);
+  const name = formData.get('name');
+  const email = formData.get('email');
+  const message = formData.get('message') || '';
+  const honey = formData.get('_honey') || '';
   const errorMsgEl = form.querySelector('.error-msg');
   
   // Clear previous errors
   if (errorMsgEl) errorMsgEl.style.display = 'none';
 
+  // Check honeypot (spam protection)
+  if (honey.trim() !== '') {
+    // Silently fail for bots
+    return;
+  }
+
   // Validate Gmail
-  if (!senderEmail.toLowerCase().endsWith('@gmail.com')) {
+  if (!email.toLowerCase().endsWith('@gmail.com')) {
     if (errorMsgEl) {
       errorMsgEl.textContent = 'Error: Only @gmail.com addresses are accepted.';
       errorMsgEl.style.display = 'block';
@@ -241,48 +251,79 @@ function simulateSubmit(event, isContact) {
     submitBtn.disabled = true;
     submitBtn.style.opacity = '0.5';
     submitBtn.style.cursor = 'not-allowed';
-    submitBtn.innerHTML = 'Processing... <i class="fa-solid fa-spinner fa-spin"></i>';
+    submitBtn.innerHTML = 'Sending... <i class="fa-solid fa-spinner fa-spin"></i>';
   }
 
-  // Simulate network request (2 seconds)
-  setTimeout(() => {
+  // Prepare Web3Forms data
+  const web3Data = {
+    access_key: '127c4fea-0e33-418a-a3f3-c4fa7c5d014b',
+    subject: isContact ? 'Work Inquiry from Portfolio' : 'App Download Request from Portfolio',
+    from_name: name,
+    from_email: email,
+    message: isContact ? message : `Request for downloadable app version of game project.\n\nName: ${name}\nEmail: ${email}`,
+    _template: 'table',
+    _captcha: 'false'
+  };
+
+  // Submit to Web3Forms
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(web3Data)
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Hide loading
     if (loadingBar) {
       loadingBar.classList.remove('loading-active');
     }
+    
+    // Re-enable submit button
     if (submitBtn) {
       submitBtn.disabled = false;
       submitBtn.style.opacity = '1';
-      submitBtn.style.cursor = 'none'; // custom cursor back
+      submitBtn.style.cursor = 'none';
       submitBtn.innerHTML = isContact ? 'Send Email <i class="fa-solid fa-paper-plane"></i>' : 'Request App <i class="fa-solid fa-paper-plane"></i>';
     }
     
-    // Check for "error" simulation flag
-    const nameInput = form.querySelector('input[name="name"], input[type="text"]');
-    const isError = nameInput && nameInput.value.toLowerCase() === 'test error';
-    
-    if (isError) {
-      openModal('modal-submit-error');
-    } else {
+    if (data.success) {
+      // Success
       openModal('modal-submit-success');
       form.reset();
-      
-      // If contact, still trigger the actual mailto logic
-      if (isContact) {
-        const name = nameInput ? nameInput.value : '';
-        const msgArea = form.querySelector('textarea');
-        const msg = msgArea ? msgArea.value : '';
-        const email = 'charlescarbonelwork@gmail.com';
-        const body = 'Name: ' + name + '\nEmail: ' + senderEmail + '\n\nMessage:\n' + msg;
-        
-        // Wait briefly so they can read the success message before jumping to mail client
-        setTimeout(() => {
-          window.location.href =
-            'mailto:' +
-            email +
-            '?subject=Work Inquiry from ' + encodeURIComponent(name) +
-            '&body=' + encodeURIComponent(body);
-        }, 1500);
+    } else {
+      // Error
+      if (errorMsgEl) {
+        errorMsgEl.textContent = 'Error: ' + (data.message || 'Failed to send message. Please try again.');
+        errorMsgEl.style.display = 'block';
+      } else {
+        alert('Error: ' + (data.message || 'Failed to send message. Please try again.'));
       }
     }
-  }, 2000);
+  })
+  .catch(error => {
+    // Hide loading
+    if (loadingBar) {
+      loadingBar.classList.remove('loading-active');
+    }
+    
+    // Re-enable submit button
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+      submitBtn.style.cursor = 'none';
+      submitBtn.innerHTML = isContact ? 'Send Email <i class="fa-solid fa-paper-plane"></i>' : 'Request App <i class="fa-solid fa-paper-plane"></i>';
+    }
+    
+    // Network error
+    if (errorMsgEl) {
+      errorMsgEl.textContent = 'Error: Network error. Please check your connection and try again.';
+      errorMsgEl.style.display = 'block';
+    } else {
+      alert('Error: Network error. Please check your connection and try again.');
+    }
+    console.error('Web3Forms submission error:', error);
+  });
 }
