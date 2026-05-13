@@ -205,19 +205,20 @@ window.onclick = function (event) {
 };
 
 // --- FORM SUBMISSION SIMULATION ---
+// --- FORM SUBMISSION WITH WEB3FORMS ---
 function simulateSubmit(event, isContact) {
   event.preventDefault();
   
   const form = event.target;
-  const emailInput = form.querySelector('input[type="email"], input[name="email"]');
-  const senderEmail = emailInput ? emailInput.value : '';
+  const formData = new FormData(form);
+  const email = formData.get('email') || '';
   const errorMsgEl = form.querySelector('.error-msg');
   
   // Clear previous errors
   if (errorMsgEl) errorMsgEl.style.display = 'none';
 
   // Validate Gmail
-  if (!senderEmail.toLowerCase().endsWith('@gmail.com')) {
+  if (!email.toLowerCase().endsWith('@gmail.com')) {
     if (errorMsgEl) {
       errorMsgEl.textContent = 'Error: Only @gmail.com addresses are accepted.';
       errorMsgEl.style.display = 'block';
@@ -226,6 +227,12 @@ function simulateSubmit(event, isContact) {
     }
     return;
   }
+
+  // Add required Web3Forms fields
+  formData.set('access_key', '127c4fea-0e33-418a-a3f3-c4fa7c5d014b');
+  formData.set('subject', isContact ? 'Work Inquiry from Portfolio' : 'App Download Request from Portfolio');
+  formData.set('from_name', formData.get('name') || 'Portfolio Visitor');
+  formData.set('from_email', email);
 
   // Show loading state
   const loadingBar = document.getElementById('loading-bar');
@@ -241,48 +248,63 @@ function simulateSubmit(event, isContact) {
     submitBtn.disabled = true;
     submitBtn.style.opacity = '0.5';
     submitBtn.style.cursor = 'not-allowed';
-    submitBtn.innerHTML = 'Processing... <i class="fa-solid fa-spinner fa-spin"></i>';
+    submitBtn.innerHTML = 'Sending... <i class="fa-solid fa-spinner fa-spin"></i>';
   }
 
-  // Simulate network request (2 seconds)
-  setTimeout(() => {
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Hide loading
     if (loadingBar) {
       loadingBar.classList.remove('loading-active');
     }
+    
+    // Re-enable submit button
     if (submitBtn) {
       submitBtn.disabled = false;
       submitBtn.style.opacity = '1';
-      submitBtn.style.cursor = 'none'; // custom cursor back
+      submitBtn.style.cursor = 'none';
       submitBtn.innerHTML = isContact ? 'Send Email <i class="fa-solid fa-paper-plane"></i>' : 'Request App <i class="fa-solid fa-paper-plane"></i>';
     }
     
-    // Check for "error" simulation flag
-    const nameInput = form.querySelector('input[name="name"], input[type="text"]');
-    const isError = nameInput && nameInput.value.toLowerCase() === 'test error';
-    
-    if (isError) {
-      openModal('modal-submit-error');
-    } else {
+    if (data.success) {
+      // Success
       openModal('modal-submit-success');
       form.reset();
-      
-      // If contact, still trigger the actual mailto logic
-      if (isContact) {
-        const name = nameInput ? nameInput.value : '';
-        const msgArea = form.querySelector('textarea');
-        const msg = msgArea ? msgArea.value : '';
-        const email = 'charlescarbonelwork@gmail.com';
-        const body = 'Name: ' + name + '\nEmail: ' + senderEmail + '\n\nMessage:\n' + msg;
-        
-        // Wait briefly so they can read the success message before jumping to mail client
-        setTimeout(() => {
-          window.location.href =
-            'mailto:' +
-            email +
-            '?subject=Work Inquiry from ' + encodeURIComponent(name) +
-            '&body=' + encodeURIComponent(body);
-        }, 1500);
+    } else {
+      // Error
+      if (errorMsgEl) {
+        errorMsgEl.textContent = 'Error: ' + (data.message || 'Failed to send message. Please try again.');
+        errorMsgEl.style.display = 'block';
+      } else {
+        alert('Error: ' + (data.message || 'Failed to send message. Please try again.'));
       }
     }
-  }, 2000);
+  })
+  .catch(error => {
+    // Hide loading
+    if (loadingBar) {
+      loadingBar.classList.remove('loading-active');
+    }
+    
+    // Re-enable submit button
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+      submitBtn.style.cursor = 'none';
+      submitBtn.innerHTML = isContact ? 'Send Email <i class="fa-solid fa-paper-plane"></i>' : 'Request App <i class="fa-solid fa-paper-plane"></i>';
+    }
+    
+    // Network error
+    if (errorMsgEl) {
+      errorMsgEl.textContent = 'Error: Network error. Please check your connection and try again.';
+      errorMsgEl.style.display = 'block';
+    } else {
+      alert('Error: Network error. Please check your connection and try again.');
+    }
+    console.error('Web3Forms submission error:', error);
+  });
 }

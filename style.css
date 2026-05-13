@@ -258,6 +258,52 @@ h6 {
   font-size: 0.9rem;
 }
 
+.meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+.social-links {
+  display: flex;
+  gap: 18px;
+}
+
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  color: var(--text-main);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.03);
+  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.social-links a:hover {
+  color: var(--highlight-gold);
+  border-color: var(--highlight-gold);
+  background: rgba(201, 168, 76, 0.12);
+  transform: translateY(-2px);
+}
+
+.social-links i {
+  font-size: 1.1rem;
+}
+
+@media (max-width: 680px) {
+  .meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 .download-resume-btn {
   display: inline-block;
   margin-top: 15px;
