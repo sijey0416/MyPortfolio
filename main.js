@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
   // --- CUSTOM CURSOR ---
   const cursorDot = document.querySelector(".cursor-dot");
   const cursorRing = document.querySelector(".cursor-ring");
@@ -109,6 +109,22 @@
     document.querySelector(".hero").classList.add("revealed");
   }, 100);
 
+  // --- SPLIT NAME INTO FIRST/LAST FOR GHL TRACKING ---
+  document.querySelectorAll(".split-name-input").forEach((input) => {
+    const syncHiddenNameFields = () => {
+      const form = input.closest("form");
+      const parts = input.value.trim().split(/\s+/).filter(Boolean);
+      const first = parts.shift() || "";
+      const last = parts.join(" ");
+      form.querySelector(".first-name-hidden").value = first;
+      form.querySelector(".last-name-hidden").value = last;
+    };
+
+    // Covers typing, and 'change' catches autofill in browsers that skip 'input'
+    input.addEventListener("input", syncHiddenNameFields);
+    input.addEventListener("change", syncHiddenNameFields);
+  });
+
   // --- EXPERIENCE TABS ---
   const tabs = document.querySelectorAll(".exp-tab");
   const panels = document.querySelectorAll(".exp-panel");
@@ -208,103 +224,121 @@ window.onclick = function (event) {
 // --- FORM SUBMISSION WITH WEB3FORMS ---
 function simulateSubmit(event, isContact) {
   event.preventDefault();
-  
+
   const form = event.target;
   const formData = new FormData(form);
-  const email = formData.get('email') || '';
-  const errorMsgEl = form.querySelector('.error-msg');
-  
+  const email = formData.get("email") || "";
+  const errorMsgEl = form.querySelector(".error-msg");
+
   // Clear previous errors
-  if (errorMsgEl) errorMsgEl.style.display = 'none';
+  if (errorMsgEl) errorMsgEl.style.display = "none";
 
   // Validate Gmail
-  if (!email.toLowerCase().endsWith('@gmail.com')) {
+  if (!email.toLowerCase().endsWith("@gmail.com")) {
     if (errorMsgEl) {
-      errorMsgEl.textContent = 'Error: Only @gmail.com addresses are accepted.';
-      errorMsgEl.style.display = 'block';
+      errorMsgEl.textContent = "Error: Only @gmail.com addresses are accepted.";
+      errorMsgEl.style.display = "block";
     } else {
-      alert('Error: Only @gmail.com addresses are accepted.');
+      alert("Error: Only @gmail.com addresses are accepted.");
     }
     return;
   }
 
   // Add required Web3Forms fields
-  formData.set('access_key', '127c4fea-0e33-418a-a3f3-c4fa7c5d014b');
-  formData.set('subject', isContact ? 'Work Inquiry from Portfolio' : 'App Download Request from Portfolio');
-  formData.set('from_name', formData.get('name') || 'Portfolio Visitor');
-  formData.set('from_email', email);
+  formData.set("access_key", "127c4fea-0e33-418a-a3f3-c4fa7c5d014b");
+  formData.set(
+    "subject",
+    isContact
+      ? "Work Inquiry from Portfolio"
+      : "App Download Request from Portfolio",
+  );
+  formData.set("from_name", formData.get("name") || "Portfolio Visitor");
+  formData.set("from_email", email);
 
   // Show loading state
-  const loadingBar = document.getElementById('loading-bar');
+  const loadingBar = document.getElementById("loading-bar");
   if (loadingBar) {
-    loadingBar.classList.remove('loading-active');
+    loadingBar.classList.remove("loading-active");
     void loadingBar.offsetWidth; // trigger reflow
-    loadingBar.classList.add('loading-active');
+    loadingBar.classList.add("loading-active");
   }
-  
+
   // Disable submit button
   const submitBtn = form.querySelector('button[type="submit"]');
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.style.opacity = '0.5';
-    submitBtn.style.cursor = 'not-allowed';
-    submitBtn.innerHTML = 'Sending... <i class="fa-solid fa-spinner fa-spin"></i>';
+    submitBtn.style.opacity = "0.5";
+    submitBtn.style.cursor = "not-allowed";
+    submitBtn.innerHTML =
+      'Sending... <i class="fa-solid fa-spinner fa-spin"></i>';
   }
 
-  fetch('https://api.web3forms.com/submit', {
-    method: 'POST',
-    body: formData
+  fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    body: formData,
   })
-  .then(response => response.json())
-  .then(data => {
-    // Hide loading
-    if (loadingBar) {
-      loadingBar.classList.remove('loading-active');
-    }
-    
-    // Re-enable submit button
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.style.opacity = '1';
-      submitBtn.style.cursor = 'none';
-      submitBtn.innerHTML = isContact ? 'Send Email <i class="fa-solid fa-paper-plane"></i>' : 'Request App <i class="fa-solid fa-paper-plane"></i>';
-    }
-    
-    if (data.success) {
-      // Success
-      openModal('modal-submit-success');
-      form.reset();
-    } else {
-      // Error
-      if (errorMsgEl) {
-        errorMsgEl.textContent = 'Error: ' + (data.message || 'Failed to send message. Please try again.');
-        errorMsgEl.style.display = 'block';
-      } else {
-        alert('Error: ' + (data.message || 'Failed to send message. Please try again.'));
+    .then((response) => response.json())
+    .then((data) => {
+      // Hide loading
+      if (loadingBar) {
+        loadingBar.classList.remove("loading-active");
       }
-    }
-  })
-  .catch(error => {
-    // Hide loading
-    if (loadingBar) {
-      loadingBar.classList.remove('loading-active');
-    }
-    
-    // Re-enable submit button
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.style.opacity = '1';
-      submitBtn.style.cursor = 'none';
-      submitBtn.innerHTML = isContact ? 'Send Email <i class="fa-solid fa-paper-plane"></i>' : 'Request App <i class="fa-solid fa-paper-plane"></i>';
-    }
-    
-    // Network error
-    if (errorMsgEl) {
-      errorMsgEl.textContent = 'Error: Network error. Please check your connection and try again.';
-      errorMsgEl.style.display = 'block';
-    } else {
-      alert('Error: Network error. Please check your connection and try again.');
-    }
-    console.error('Web3Forms submission error:', error);
-  });
+
+      // Re-enable submit button
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+        submitBtn.style.cursor = "none";
+        submitBtn.innerHTML = isContact
+          ? 'Send Email <i class="fa-solid fa-paper-plane"></i>'
+          : 'Request App <i class="fa-solid fa-paper-plane"></i>';
+      }
+
+      if (data.success) {
+        // Success
+        openModal("modal-submit-success");
+        form.reset();
+      } else {
+        // Error
+        if (errorMsgEl) {
+          errorMsgEl.textContent =
+            "Error: " +
+            (data.message || "Failed to send message. Please try again.");
+          errorMsgEl.style.display = "block";
+        } else {
+          alert(
+            "Error: " +
+              (data.message || "Failed to send message. Please try again."),
+          );
+        }
+      }
+    })
+    .catch((error) => {
+      // Hide loading
+      if (loadingBar) {
+        loadingBar.classList.remove("loading-active");
+      }
+
+      // Re-enable submit button
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+        submitBtn.style.cursor = "none";
+        submitBtn.innerHTML = isContact
+          ? 'Send Email <i class="fa-solid fa-paper-plane"></i>'
+          : 'Request App <i class="fa-solid fa-paper-plane"></i>';
+      }
+
+      // Network error
+      if (errorMsgEl) {
+        errorMsgEl.textContent =
+          "Error: Network error. Please check your connection and try again.";
+        errorMsgEl.style.display = "block";
+      } else {
+        alert(
+          "Error: Network error. Please check your connection and try again.",
+        );
+      }
+      console.error("Web3Forms submission error:", error);
+    });
 }
