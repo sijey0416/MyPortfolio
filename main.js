@@ -187,6 +187,12 @@ function moveCarousel(trackId, direction) {
 function closeModal(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) {
+    // Pause any playing media when the modal is closed
+    const mediaElements = modal.querySelectorAll("video, audio");
+    mediaElements.forEach(media => {
+      media.pause();
+    });
+
     modal.classList.remove("show");
     setTimeout(() => {
       modal.style.display = "none";

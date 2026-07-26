@@ -174,6 +174,9 @@
                 <span class="company"
                   ><i class="fa-solid fa-user-secret"></i> Freelancer</span
                 >
+                <span class="date"
+                  ><i class="fa-regular fa-clock"></i> 2025-2026</span
+                >
                 <p>
                   2D top-down and side-scroller game development using Unity 2D.
                 </p>
@@ -248,21 +251,55 @@
           <span class="title-decor"></span> Technical Stack
           <span class="title-decor"></span>
         </h2>
-        <div class="arsenal-grid">
-          <div class="weapon" data-name="HTML5">
-            <i class="fa-brands fa-html5"></i>
+        <div class="tech-category">
+          <h3 class="tech-category-title">FRONTEND</h3>
+          <div class="tech-pill-container">
+            <span class="tech-pill">HTML</span>
+            <span class="tech-pill">CSS</span>
+            <span class="tech-pill">JavaScript</span>
           </div>
-          <div class="weapon" data-name="CSS3">
-            <i class="fa-brands fa-css3-alt"></i>
+        </div>
+
+        <div class="tech-category">
+          <h3 class="tech-category-title">BACKEND</h3>
+          <div class="tech-pill-container">
+            <span class="tech-pill">Java</span>
+            <span class="tech-pill">PostgreSQL</span>
+            <span class="tech-pill">MySQL</span>
           </div>
-          <div class="weapon" data-name="JavaScript">
-            <i class="fa-brands fa-js"></i>
+        </div>
+
+        <div class="tech-category">
+          <h3 class="tech-category-title">CRM & AUTOMATION PLATFORM</h3>
+          <div class="tech-pill-container">
+            <span class="tech-pill">n8n</span>
+            <span class="tech-pill">Go High Level</span>
           </div>
-          <div class="weapon text-weapon" data-name="C#">C#</div>
-          <div class="weapon" data-name="PHP">
-            <i class="fa-brands fa-php"></i>
+        </div>
+
+        <div class="tech-category">
+          <h3 class="tech-category-title">AI</h3>
+          <div class="tech-pill-container">
+            <span class="tech-pill">Claude Code</span>
+            <span class="tech-pill">Gemini</span>
+            <span class="tech-pill">Codex</span>
+            <span class="tech-pill">Copilot</span>
           </div>
-          <div class="weapon text-weapon" data-name="MySQL">MySQL</div>
+        </div>
+
+        <div class="tech-category">
+          <h3 class="tech-category-title">DEVELOPER TOOLS</h3>
+          <div class="tech-pill-container">
+            <span class="tech-pill">Unity 2D</span>
+            <span class="tech-pill">VSCode</span>
+            <span class="tech-pill">Antigravity IDE</span>
+            <span class="tech-pill">Git</span>
+            <span class="tech-pill">GitHub</span>
+            <span class="tech-pill">ClickUp</span>
+            <span class="tech-pill">Discord</span>
+            <span class="tech-pill">Slack</span>
+            
+          </div>
         </div>
       </section>
 
@@ -278,11 +315,9 @@
           <div class="case-file" onclick="openModal('modal-web')">
             <div class="case-tab">File 01</div>
             <div class="case-cover">
-              <div class="case-stamp">CLASSIFIED</div>
-              <h4>Web Project</h4>
-              <p>
-                An upcoming modern web application showcasing user experience.
-              </p>
+              <div class="case-stamp">Evidence</div>
+              <h4>Brewsey Coffee</h4>
+              <p>A coffee shop ordering website</p>
               <span class="inspect-btn"
                 >Inspect Evidence <i class="fa-solid fa-magnifying-glass"></i
               ></span>
@@ -539,8 +574,8 @@
           >&times;</span
         >
         <div class="folder-content">
-          <div class="folder-stamp">RESTRICTED</div>
-          <h2>Web Project</h2>
+          <div class="folder-stamp">Evidence</div>
+          <h2>Brewsey Coffee</h2>
           <div class="modal-media carousel">
             <button
               class="carousel-btn left-btn"
@@ -556,26 +591,22 @@
               >
                 <div class="carousel-slide">
                   <div class="placeholder-media">
-                    <i class="fa-solid fa-laptop-code"></i>
-                    <p>UI Preview 1</p>
+                    <img src="./Pictures/WEB1.png" alt="Brewsey Coffee" />
                   </div>
                 </div>
                 <div class="carousel-slide">
                   <div class="placeholder-media">
-                    <i class="fa-solid fa-laptop-code"></i>
-                    <p>UI Preview 2</p>
+                    <img src="./Pictures/WEB2.png" alt="Brewsey Coffee" />
                   </div>
                 </div>
                 <div class="carousel-slide">
                   <div class="placeholder-media">
-                    <i class="fa-solid fa-laptop-code"></i>
-                    <p>UI Preview 3</p>
+                    <img src="./Pictures/WEB3.png" alt="Brewsey Coffee" />
                   </div>
                 </div>
                 <div class="carousel-slide">
                   <div class="placeholder-media">
-                    <i class="fa-solid fa-laptop-code"></i>
-                    <p>UI Preview 4</p>
+                    <img src="./Pictures/WEB4.png" alt="Brewsey Coffee" />
                   </div>
                 </div>
               </div>
@@ -588,10 +619,17 @@
             </button>
           </div>
           <p class="typewritten-small">
-            <strong>Overview:</strong> Describe your web application here. What
-            problem does it solve and what are the main features?<br /><br />
-            <strong>Tools Utilized:</strong> HTML, CSS, JavaScript, React (or
-            similar)
+            <strong>Website Link :</strong>
+            <a href="https://brewseycoffee.vercel.app/" target="_blank"
+              >https://brewseycoffee.vercel.app/</a
+            >
+            <br />
+            <strong>Overview:</strong> An online coffee ordering website with
+            an admin page for managing products and orders. It features a
+            modern, responsive design and a seamless ordering process for
+            customers, supported by a comprehensive backend for store owners.
+            <br /><br />
+            <strong>Tools Utilized:</strong> HTML, CSS, Next.js + TypeScript, PostgreSQL
           </p>
         </div>
       </div>
@@ -775,7 +813,6 @@
           src="Pictures/Profile.png"
           alt="Profile Picture"
           class="mugshot"
-          style="filter: grayscale(0%) contrast(1)"
         />
         <div
           class="frame-tape top-left"
