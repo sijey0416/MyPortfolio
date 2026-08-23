@@ -632,31 +632,23 @@ h6 {
 }
 
 .cert-card:hover {
-  border-color: var(--highlight-gold);
-  background: #1a1a1a;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
-.wax-seal {
-  width: 40px;
-  height: 40px;
-  background: var(--blood-red);
-  border-radius: 50%;
-  margin: 0 auto 15px;
-  box-shadow:
-    inset 0 0 10px #4a0000,
-    0 2px 5px rgba(0, 0, 0, 0.5);
-  position: relative;
+.cert-card h3 {
+  font-size: 1.1rem;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  margin: 0;
 }
 
-.wax-seal::after {
-  content: "C";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: var(--font-serif);
-  color: #a00;
-  font-weight: bold;
+.cert-icon {
+  font-size: 2rem;
+  color: #000000;
+  margin-bottom: 15px;
+  display: inline-block;
 }
 
 /* SECURE DOWNLOAD REQUEST (MATCHING USER DRAFT) */

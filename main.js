@@ -209,12 +209,44 @@ function openCertModal(certType) {
       img: "./Pictures/SystemAdminCert.png",
     },
     SAP4Hana: { title: "SAP S/4HANA", img: "./Pictures/SapCert.png" },
+    ZapierCert: {
+      title: "Zapier Intermediate",
+      pdf: "./Pictures/Building-Intermediate-Zapier.pdf",
+    },
+    AIAgentsCert: {
+      title: "Building AI Agents",
+      pdf: "./Pictures/certificate-charles-carbonel-Building-AI-Agents.pdf",
+    },
+    JobtreadAdmin: {
+      title: "JobTread Administrator",
+      img: "./Pictures/administrator-cert-badge~3041fb31.jpg",
+    },
+    JobtreadAPI: {
+      title: "JobTread API",
+      img: "./Pictures/api-cert-badge~fdc2c801.jpg",
+    },
+    JobtreadWorkflow: {
+      title: "JobTread Workflow",
+      img: "./Pictures/workflow-cert-badge~340e7489.jpg",
+    }
   };
 
   const cert = certData[certType];
   if (cert) {
     document.getElementById("cert-title").textContent = cert.title;
-    document.getElementById("cert-img").src = cert.img;
+    const imgEl = document.getElementById("cert-img");
+    const pdfEl = document.getElementById("cert-pdf");
+
+    if (cert.pdf) {
+      imgEl.style.display = "none";
+      pdfEl.style.display = "block";
+      pdfEl.src = cert.pdf;
+    } else {
+      pdfEl.style.display = "none";
+      imgEl.style.display = "block";
+      imgEl.src = cert.img;
+    }
+    
     openModal("cert-modal");
   }
 }
