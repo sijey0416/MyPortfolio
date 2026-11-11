@@ -304,35 +304,52 @@ h6 {
   }
 }
 
+/* RESUME DOWNLOAD BUTTON */
+.download-wrapper {
+  margin-top: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 .download-resume-btn {
-  display: inline-block;
-  margin-top: 15px;
-  background: transparent;
-  color: var(--highlight-gold);
-  border: 2px solid var(--border-gold);
-  padding: 10px 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fdfbf7;
+  color: #922b21;
+  border: 2px solid #922b21;
+  padding: 12px 28px;
   font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: 1.1rem;
+  font-weight: 700;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 2px;
   text-decoration: none;
   cursor: none;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  transition: all 0.25s ease;
+  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
   width: fit-content;
 }
 
 .download-resume-btn i {
-  margin-right: 8px;
+  font-size: 1.15rem;
 }
 
 .download-resume-btn:hover {
-  background: var(--blood-red);
-  color: #fff;
-  border-color: var(--blood-red);
-  box-shadow: 0 0 15px var(--blood-red-glow);
+  background: #922b21;
+  color: #ffffff;
+  border-color: #922b21;
+  box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
+}
+
+.download-resume-btn:active {
+  transform: translateY(0);
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
 }
 
 /* ABOUT INTEL */
@@ -684,35 +701,6 @@ h6 {
   transform: rotate(-0.5deg);
 }
 
-.contact-box .download-resume-btn {
-  margin-top: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  text-align: center;
-  background: transparent;
-  color: #922b21;
-  border: 3px solid #922b21;
-  padding: 10px 20px;
-  font-family: var(--font-serif);
-  font-weight: 700;
-  font-size: 1.1rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-decoration: none;
-  cursor: none;
-  transition: all 0.3s;
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
-}
-
-.contact-box .download-resume-btn:hover {
-  background: rgba(146, 43, 33, 0.08);
-  transform: scale(1.03);
-  box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
-}
-
 .request-box h2 {
   color: #1a1a1a;
   font-family: var(--font-serif);
@@ -1020,6 +1008,16 @@ h6 {
 
   .request-grid {
     grid-template-columns: 1fr;
+  }
+
+  .download-wrapper {
+    margin-top: 30px;
+  }
+
+  .download-resume-btn {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    letter-spacing: 1.5px;
   }
 }
 

@@ -228,6 +228,14 @@ function openCertModal(certType) {
     JobtreadWorkflow: {
       title: "JobTread Workflow",
       img: "./Pictures/workflow-cert-badge~340e7489.jpg",
+    },
+    ITSMBadge: {
+      title: "ITSM Fundamentals",
+      img: "./Pictures/ITSM Badge.png",
+    },
+    ITSM: {
+      title: "ITSM Fundamentals",
+      img: "./Pictures/ITSM Badge.png",
     }
   };
 
